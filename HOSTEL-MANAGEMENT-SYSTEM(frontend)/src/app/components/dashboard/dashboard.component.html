@@ -1,0 +1,136 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Hostel Management</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item" *ngIf="currentUser?.role === 'ADMIN' || currentUser?.role === 'WARDEN'">
+          <a class="nav-link" routerLink="/rooms">Rooms</a>
+        </li>
+        <li class="nav-item" *ngIf="currentUser?.role === 'ADMIN' || currentUser?.role === 'WARDEN'">
+          <a class="nav-link" routerLink="/students">Students</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/complaints">Complaints</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/leave-requests">Leave Requests</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/room-transfers">Room Transfers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/maintenance">Maintenance</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <span class="navbar-text me-3">
+          Welcome, {{ currentUser?.firstName }} ({{ currentUser?.role }})
+        </span>
+        <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <div *ngIf="loading" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading" class="dashboard-grid">
+      <div class="card stat-card">
+        <h3>{{ statistics.totalStudents || 0 }}</h3>
+        <p>Total Students</p>
+      </div>
+
+      <div class="card stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h3>{{ statistics.totalRooms || 0 }}</h3>
+        <p>Total Rooms</p>
+      </div>
+
+      <div class="card stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <h3>{{ statistics.availableRooms || 0 }}</h3>
+        <p>Available Rooms</p>
+      </div>
+
+      <div class="card stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+        <h3>{{ statistics.availableBeds || 0 }}</h3>
+        <p>Available Beds</p>
+      </div>
+
+      <div class="card stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+        <h3>{{ statistics.pendingComplaints || 0 }}</h3>
+        <p>Pending Complaints</p>
+      </div>
+
+      <div class="card stat-card" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+        <h3>{{ statistics.pendingLeaveRequests || 0 }}</h3>
+        <p>Pending Leave Requests</p>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Quick Actions</h5>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" (click)="navigate('/complaints')" *ngIf="currentUser?.role === 'STUDENT'">
+                Submit Complaint
+              </button>
+              <button class="btn btn-primary" (click)="navigate('/leave-requests')" *ngIf="currentUser?.role === 'STUDENT'">
+                Request Leave
+              </button>
+              <button class="btn btn-primary" (click)="navigate('/maintenance')" *ngIf="currentUser?.role === 'STUDENT'">
+                Report Maintenance Issue
+              </button>
+              <button class="btn btn-primary" (click)="navigate('/rooms')" *ngIf="currentUser?.role === 'ADMIN' || currentUser?.role === 'WARDEN'">
+                Manage Rooms
+              </button>
+              <button class="btn btn-primary" (click)="navigate('/students')" *ngIf="currentUser?.role === 'ADMIN' || currentUser?.role === 'WARDEN'">
+                Manage Students
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">System Overview</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Total Users</span>
+                <span class="badge bg-primary">{{ statistics.totalUsers || 0 }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Total Complaints</span>
+                <span class="badge bg-warning">{{ statistics.totalComplaints || 0 }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Total Maintenance Requests</span>
+                <span class="badge bg-info">{{ statistics.totalMaintenanceRequests || 0 }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Occupied Beds</span>
+                <span class="badge bg-success">{{ statistics.occupiedBeds || 0 }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
